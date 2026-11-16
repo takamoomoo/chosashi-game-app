@@ -469,12 +469,27 @@ async function boot() {
   save = loadSave();
   bind();
   try {
-    const res = await fetch("data/game.json", { cache: "no-cache" });
-    if (!res.ok) throw new Error(res.status);
-    G = await res.json();
+    if (window.GAME_DATA) {
+      // 1枚にまとめた版（dist/chosashi_game.html。scripts/build_single_html.py）はデータを埋め込んである
+      G = window.GAME_DATA;
+    } else {
+      const res = await fetch("data/game.json", { cache: "no-cache" });
+      if (!res.ok) throw new Error(res.status);
+      G = await res.json();
+    }
   } catch (e) {
     $("loading").textContent = "データを読み込めませんでした。python -m http.server で開いてください。";
     return;
+  }
+  // ご褒美の一枚絵は本人の写真から作った絵のため GitHub に上げない（CLAUDE.md「ご褒美」）。
+  // 自分のパソコンで開いたとき（localhost）だけ、手元にある一覧 data/rewards_local.json を読む
+  // （GitHub・GitHub Pages・Muse では読みに行かないので、ないファイルの 404 も出ない）
+  G.rewards = G.rewards || {};
+  if (!window.GAME_DATA && ["localhost", "127.0.0.1"].includes(location.hostname)) {
+    try {
+      const res = await fetch("data/rewards_local.json", { cache: "no-cache" });
+      if (res.ok) G.rewards = await res.json();
+    } catch (e) { /* なければ「準備中」 */ }
   }
   // 章の事件の一覧（節の順）を作り、肢の並び順をそろえる（念のため）
   G.chapters.forEach((ch) => {
