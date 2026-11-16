@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f2430">
+<title>森土地家屋調査士事務所</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6f5e'/%3E%3Cpath d='M32 10v34' stroke='%23c8893a' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M20 50h24' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<div id="app">
+
+  <!-- タイトル -->
+  <section id="screen-title" class="screen active">
+    <div class="title-bg" style="background-image:url(img/web/bg_office.webp)"></div>
+    <div class="title-box">
+      <p class="title-sub">土地家屋調査士 択一ストーリー</p>
+      <h1>森土地家屋調査士事務所</h1>
+      <p class="title-rank" id="title-rank"></p>
+      <button class="btn primary" id="btn-start">はじめる</button>
+      <button class="btn ghost small" id="btn-album">アルバム</button>
+      <button class="btn ghost small" id="btn-reset">記録を消す</button>
+      <p class="title-note" id="title-note"></p>
+    </div>
+  </section>
+
+  <!-- 事件ファイル一覧 -->
+  <section id="screen-cases" class="screen">
+    <header class="cases-head">
+      <button class="icon-btn" id="btn-cases-back" aria-label="タイトルへ">‹</button>
+      <div>
+        <div class="cases-title">事件ファイル</div>
+        <div class="cases-status" id="cases-status"></div>
+      </div>
+    </header>
+    <div class="cases-list" id="cases-list"></div>
+  </section>
+
+  <!-- 会話・肢・解説（背景を共有） -->
+  <section id="screen-play" class="screen">
+    <div class="stage" id="stage">
+      <div class="bg" id="bg"></div>
+      <div class="portrait-box" id="portrait-box">
+        <img class="portrait" id="portrait" alt="">
+        <div class="mark-host" id="mark-host"></div>
+      </div>
+    </div>
+
+    <header class="play-head">
+      <button class="icon-btn" id="btn-play-back" aria-label="事件ファイルへ">‹</button>
+      <div class="play-title" id="play-title"></div>
+      <div class="play-count" id="play-count"></div>
+    </header>
+
+    <!-- 台詞 -->
+    <div class="dialog" id="dialog">
+      <div class="dialog-head">
+        <div class="dialog-name" id="dialog-name"></div>
+        <div class="dialog-mark" id="dialog-mark"></div>
+      </div>
+      <div class="dialog-text" id="dialog-text"></div>
+      <div class="dialog-next" id="dialog-next">▼</div>
+    </div>
+
+    <!-- 肢 -->
+    <div class="panel" id="panel-question">
+      <div class="panel-label" id="q-label"></div>
+      <div class="panel-body">
+        <p class="statement" id="q-statement"></p>
+        <img class="figure" id="q-figure" alt="図">
+      </div>
+      <p class="q-prompt">この肢は……</p>
+      <div class="answer-row">
+        <button class="answer maru" data-answer="true" aria-label="正しい">○</button>
+        <button class="answer batsu" data-answer="false" aria-label="誤り">×</button>
+      </div>
+    </div>
+
+    <!-- 解説 -->
+    <div class="panel" id="panel-explain">
+      <div class="verdict" id="ex-verdict"></div>
+      <div class="ex-meta">
+        <span id="ex-answer"></span>
+        <span class="badge" id="ex-badge">解説は確認中</span>
+        <span class="badge law-change hide" id="ex-law-change">改正注意</span>
+      </div>
+      <div class="panel-body">
+        <p class="law-change-note hide" id="ex-law-note"></p>
+        <p class="explanation" id="ex-text"></p>
+      </div>
+      <button class="btn primary" id="btn-ex-next">次へ</button>
+    </div>
+  </section>
+
+  <!-- 事件解決 -->
+  <section id="screen-result" class="screen">
+    <div class="title-bg" style="background-image:url(img/web/bg_office.webp)"></div>
+    <div class="result-box">
+      <p class="result-kicker">事件解決！</p>
+      <h2 id="r-title"></h2>
+      <div class="result-score" id="r-score"></div>
+      <div class="result-marks" id="r-marks"></div>
+      <dl class="result-table">
+        <dt>獲得経験値</dt><dd id="r-exp"></dd>
+        <dt>累計経験値</dt><dd id="r-total"></dd>
+        <dt>タカの肩書</dt><dd id="r-rank"></dd>
+      </dl>
+      <p class="result-next" id="r-next"></p>
+      <p class="result-comment" id="r-comment"></p>
+      <button class="btn primary" id="btn-result-ok">事件ファイルへ</button>
+    </div>
+  </section>
+
+  <!-- 節ごとの試験モード（台詞なし） -->
+  <section id="screen-exam" class="screen">
+    <div class="title-bg" style="background-image:url(img/web/bg_office.webp)"></div>
+    <header class="play-head exam-head">
+      <button class="icon-btn" id="btn-exam-back" aria-label="事件ファイルへ">‹</button>
+      <div class="play-title" id="exam-title"></div>
+      <div class="play-count" id="exam-count"></div>
+    </header>
+    <div class="exam-box">
+      <div class="exam-streak" id="exam-streak"></div>
+      <div class="exam-q" id="exam-q">
+        <div class="panel-label" id="exam-label"></div>
+        <p class="statement" id="exam-statement"></p>
+        <img class="figure" id="exam-figure" alt="図">
+      </div>
+      <p class="q-prompt">この肢は……</p>
+      <div class="answer-row" id="exam-answers">
+        <button class="answer maru" data-answer="true" aria-label="正しい">○</button>
+        <button class="answer batsu" data-answer="false" aria-label="誤り">×</button>
+      </div>
+    </div>
+    <div class="exam-end" id="exam-end">
+      <div class="verdict" id="exam-end-verdict"></div>
+      <p class="exam-end-text" id="exam-end-text"></p>
+      <div class="exam-end-miss" id="exam-end-miss">
+        <div class="panel-label" id="exam-miss-label"></div>
+        <p class="statement" id="exam-miss-statement"></p>
+        <p class="explanation" id="exam-miss-ex"></p>
+      </div>
+      <button class="btn primary" id="btn-exam-retry">最初からやり直す</button>
+      <button class="btn ghost small" id="btn-exam-close">事件ファイルへ</button>
+    </div>
+  </section>
+
+  <!-- アルバム（章のご褒美の一枚絵） -->
+  <section id="screen-album" class="screen">
+    <header class="cases-head">
+      <button class="icon-btn" id="btn-album-back" aria-label="タイトルへ">‹</button>
+      <div>
+        <div class="cases-title">アルバム</div>
+        <div class="cases-status">章の全節の試験モードに合格すると、一枚絵が手に入ります</div>
+      </div>
+    </header>
+    <div class="cases-list" id="album-list"></div>
+  </section>
+  <div class="viewer" id="viewer"><img id="viewer-img" alt="一枚絵"></div>
+
+  <div class="loading" id="loading">読み込み中…</div>
+</div>
+<script src="fx.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
